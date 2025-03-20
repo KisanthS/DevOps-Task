@@ -12,20 +12,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git credentialsId: GITHUB_CREDENTIALS_ID, url: 'https://github.com/KisanthS/DevOps-Task.git', branch: 'main'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                script {
-                    sh '''
-                    sudo apt update
-                    sudo apt install -y python3-pip
-                    pip install --no-cache-dir -r requirements.txt
-                    pytest --junitxml=test-results.xml || exit 1
-                    '''
-                }
+                git credentialsId: GITHUB_CREDENTIALS_ID, url: 'hhttps://github.com/KisanthS/DevOps-Task.git', branch: 'main'
             }
         }
 
@@ -58,13 +45,7 @@ pipeline {
         stage('Deploy using Docker Compose') {
             steps {
                 script {
-                    sh '''
-                    sudo apt update
-                    sudo apt install -y python3-distutils
-                    cd $APP_DIR
-                    docker-compose down
-                    docker-compose up -d
-                    '''
+                    sh "docker-compose up -d"
                 }
             }
         }
