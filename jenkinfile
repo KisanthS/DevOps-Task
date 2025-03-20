@@ -15,17 +15,19 @@ pipeline {
                 git credentialsId: GITHUB_CREDENTIALS_ID, url: 'https://github.com/KisanthS/DevOps-Task.git', branch: 'main'
             }
         }
-    stage('Deploy using Docker Compose') {
-        steps {
-            script {
-                sh '''
-                sudo apt update
-                sudo apt install -y python3-distutils
-                docker-compose up -d
-                '''
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    sh '''
+                    sudo apt update
+                    sudo apt install -y python3-pip
+                    pip install --no-cache-dir -r requirements.txt
+                    pytest --junitxml=test-results.xml || exit 1
+                    '''
+                }
             }
         }
-    }
 
         stage('Build Docker Image') {
             steps {
@@ -56,7 +58,13 @@ pipeline {
         stage('Deploy using Docker Compose') {
             steps {
                 script {
-                    sh "docker-compose up -d"
+                    sh '''
+                    sudo apt update
+                    sudo apt install -y python3-distutils
+                    cd $APP_DIR
+                    docker-compose down
+                    docker-compose up -d
+                    '''
                 }
             }
         }
